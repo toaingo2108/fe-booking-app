@@ -26,7 +26,7 @@ const Register = () => {
 
   const {
     data: { districts },
-  } = useFetch(`divisions/d?provinceCode=${+credentials.address.province}`);
+  } = useFetch(`divisions/d?provinceId=${credentials.address.province}`);
 
   const navigate = useNavigate();
 

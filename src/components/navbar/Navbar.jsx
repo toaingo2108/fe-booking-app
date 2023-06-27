@@ -11,13 +11,14 @@ const Navbar = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      await axiosClient.post("/auth/logout", {
+      const res = await axiosClient.post("/auth/logout", {
         refreshToken: token.authTokens.refreshToken,
       });
+      console.log(res);
       dispatch({ type: "LOGOUT" });
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   };
 

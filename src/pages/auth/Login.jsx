@@ -23,6 +23,7 @@ const Login = () => {
     dispatch({ type: "LOGIN_START" });
     try {
       const res = await axiosClient.post("/auth/login", credentials);
+      console.log(res);
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
       navigate("/");
     } catch (error) {
@@ -54,12 +55,12 @@ const Login = () => {
         <button type="submit" disabled={loading} className="lButton">
           Login
         </button>
-        <span>
+        <div>
           Do not have an account?
           <Link to="/register" style={{ marginLeft: "5px" }}>
             Sign up now
           </Link>
-        </span>
+        </div>
         {error && <span>{error.message}</span>}
       </form>
     </div>

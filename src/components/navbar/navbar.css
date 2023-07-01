@@ -25,3 +25,8 @@
   cursor: pointer;
   color: #003580;
 }
+
+.navLink {
+  margin: 0 20px;
+  color: white;
+}

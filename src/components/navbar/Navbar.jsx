@@ -1,20 +1,21 @@
 import { useContext } from "react";
 import "./navbar.css";
 import { AuthContext } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../axiosClient";
+import { useModalProperty } from "../../hooks/useModalProperty";
 
 const Navbar = () => {
   const { token, dispatch } = useContext(AuthContext);
+  const { openModal } = useModalProperty();
   const navigate = useNavigate();
 
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const res = await axiosClient.post("/auth/logout", {
+      await axiosClient.post("/auth/logout", {
         refreshToken: token.authTokens.refreshToken,
       });
-      console.log(res);
       dispatch({ type: "LOGOUT" });
       navigate("/");
     } catch (error) {
@@ -28,6 +29,9 @@ const Navbar = () => {
         <span className="logo">lamabooking</span>
         {token?.authTokens?.accessToken ? (
           <span>
+            <Link className="navLink" to="#" onClick={() => openModal()}>
+              add property
+            </Link>
             <span>{token.user.name}</span>
             <button className="navButton" onClick={handleLogout}>
               Logout

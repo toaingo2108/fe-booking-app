@@ -18,7 +18,7 @@ const Register = () => {
     },
   });
 
-  const { token, loading, error, dispatch } = useContext(AuthContext);
+  const { loading, error, dispatch } = useContext(AuthContext);
 
   const {
     data: { provinces },
@@ -26,7 +26,11 @@ const Register = () => {
 
   const {
     data: { districts },
-  } = useFetch(`divisions/d?provinceId=${credentials.address.province}`);
+  } = useFetch(
+    `divisions/d?provinceId=${
+      credentials.address.province || provinces?.[0]?._id
+    }`
+  );
 
   const navigate = useNavigate();
 
@@ -99,7 +103,9 @@ const Register = () => {
               id="province"
               onChange={handleChangeAddress}
               className="lInput"
+              required
             >
+              <option value="">Province</option>
               {provinces?.map((province) => (
                 <option key={province._id} value={province._id}>
                   {province.name}
@@ -111,7 +117,9 @@ const Register = () => {
               id="district"
               onChange={handleChangeAddress}
               className="lInput"
+              required
             >
+              <option value="">District</option>
               {districts?.map((district) => (
                 <option key={district._id} value={district._id}>
                   {district.name}
@@ -124,6 +132,7 @@ const Register = () => {
               id="address"
               onChange={handleChangeAddress}
               className="lInput"
+              required
             />
           </div>
         </div>

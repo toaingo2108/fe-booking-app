@@ -4,6 +4,7 @@ import { useModalProperty } from "../../hooks/useModalProperty";
 import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import axiosClient from "../../axiosClient";
+import { toast } from "react-toastify";
 
 const customStyles = {
   content: {
@@ -21,7 +22,7 @@ Modal.setAppElement("#root");
 
 const newAccommodation = {
   title: "",
-  pricePerNight: 0,
+  pricePerNight: "",
   type: "",
   bedType: "",
   accommodations: "",
@@ -90,6 +91,7 @@ const CreateProperty = () => {
     try {
       await axiosClient.post("/properties", formData);
       closeModal();
+      toast.success("Create property successful!!!");
     } catch (error) {
       console.error(error);
     }
@@ -249,6 +251,7 @@ const CreateProperty = () => {
                 name="pricePerNight"
                 placeholder="$"
                 className="modal-input"
+                min={0}
                 value={accommodation.pricePerNight}
                 onChange={handleChangeAccommodation}
                 required

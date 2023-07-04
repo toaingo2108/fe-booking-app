@@ -1,6 +1,6 @@
 import "./searchItem.css";
 
-const SearchItem = () => {
+const SearchItem = ({ property, group }) => {
   return (
     <div className="searchItem">
       <img
@@ -9,14 +9,18 @@ const SearchItem = () => {
         className="siImg"
       />
       <div className="siDesc">
-        <h1 className="siTitle">Tower Street Apartments</h1>
-        <span className="siDistance">500m from center</span>
-        <span className="siTaxiOp">Free airport taxi</span>
+        <h1 className="siTitle">{property.title}</h1>
+        <span className="siDistance">{group.title}</span>
+        <span className="siTaxiOp">{group.type}</span>
         <span className="siSubtitle">
-          Studio Apartment with Air conditioning
+          {property.address.address}, {property.address.districtName},{" "}
+          {property.address.provinceName}
         </span>
         <span className="siFeatures">
-          Entire studio • 1 bathroom • 21m² 1 full bed
+          {group.bedType} • {group.accommodations.length || 0} room •{" "}
+          {group.accommodations?.map(
+            (accommodation) => `|${accommodation.roomCode}|`
+          )}
         </span>
         <span className="siCancelOp">Free cancellation </span>
         <span className="siCancelOpSubtitle">
@@ -25,11 +29,11 @@ const SearchItem = () => {
       </div>
       <div className="siDetails">
         <div className="siRating">
-          <span>Excellent</span>
-          <button>8.9</button>
+          <span></span>
+          <button>{property.reviewCount.toFixed(1)}</button>
         </div>
         <div className="siDetailTexts">
-          <span className="siPrice">$112</span>
+          <span className="siPrice">${group.pricePerNight.toFixed(2)}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
           <button className="siCheckButton">See availability</button>
         </div>

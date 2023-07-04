@@ -1,11 +1,13 @@
 import "./list.css";
 import Navbar from "../../components/navbar/Navbar";
 import Header from "../../components/header/Header";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import SearchItem from "../../components/searchItem/SearchItem";
+import useFetch from "../../hooks/useFetch";
+import { ToastContainer, toast } from "react-toastify";
 
 const List = () => {
   const location = useLocation();
@@ -13,6 +15,25 @@ const List = () => {
   const [date, setDate] = useState(location.state.date);
   const [openDate, setOpenDate] = useState(false);
   const [options, setOptions] = useState(location.state.options);
+  const navigate = useNavigate();
+
+  const {
+    data: { properties },
+    reFetch,
+    error,
+  } = useFetch(
+    `/properties?bookInDate=${date[0].startDate.toISOString()}&bookOutDate=${date[0].endDate.toISOString()}`
+  );
+
+  const handleClick = () => {
+    reFetch();
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.response.data.message);
+    }
+  }, [error]);
 
   return (
     <div>
@@ -84,18 +105,20 @@ const List = () => {
                 </div>
               </div>
             </div>
-            <button>Search</button>
+            <button onClick={handleClick}>Search</button>
           </div>
           <div className="listResult">
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
+            {properties?.map((property) => (
+              <React.Fragment key={property._id}>
+                {property?.accommodationGroups?.map((group, index) => (
+                  <SearchItem
+                    key={`${property._id} ${index}`}
+                    property={property}
+                    group={group}
+                  />
+                ))}
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </div>

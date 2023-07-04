@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import "./navbar.css";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "../../axiosClient";
 import { useModalProperty } from "../../hooks/useModalProperty";
 
@@ -9,6 +9,8 @@ const Navbar = () => {
   const { token, dispatch } = useContext(AuthContext);
   const { openModal } = useModalProperty();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -26,12 +28,16 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="navContainer">
-        <span className="logo">lamabooking</span>
+        <span className="logo" onClick={() => navigate("/")}>
+          bookingapp
+        </span>
         {token?.authTokens?.accessToken ? (
           <span>
-            <Link className="navLink" to="#" onClick={() => openModal()}>
-              add property
-            </Link>
+            {pathname === "/" && (
+              <Link className="navLink" to="#" onClick={() => openModal()}>
+                add property
+              </Link>
+            )}
             <span>{token.user.name}</span>
             <button className="navButton" onClick={handleLogout}>
               Logout

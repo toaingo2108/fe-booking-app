@@ -3,6 +3,7 @@ import "./auth.css";
 import { AuthContext } from "../../contexts/AuthContext";
 import axiosClient from "../../axiosClient";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -10,7 +11,7 @@ const Login = () => {
     password: undefined,
   });
 
-  const { loading, error, dispatch } = useContext(AuthContext);
+  const { loading, dispatch } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -27,6 +28,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       dispatch({ type: "LOGIN_FAILURE", payload: error.response.data });
+      toast.error(error.response.data.message);
     }
   };
 
@@ -60,7 +62,6 @@ const Login = () => {
             Sign up now
           </Link>
         </div>
-        {error && <span>{error.message}</span>}
       </form>
     </div>
   );

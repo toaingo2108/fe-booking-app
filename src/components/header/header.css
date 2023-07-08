@@ -6,6 +6,11 @@
   position: relative;
 }
 
+.select-custom {
+  color: #000 !important;
+  width: 200px;
+}
+
 .headerContainer {
   width: 100%;
   max-width: 1024px;

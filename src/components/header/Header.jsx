@@ -15,9 +15,18 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import Select from "react-select";
+import useFetch from "../../hooks/useFetch";
 
 const Header = ({ type }) => {
-  const [destination, setDestination] = useState("");
+  const [district, setDistrict] = useState({
+    label: "",
+    value: "",
+  });
+  const [province, setProvince] = useState({
+    label: "",
+    value: "",
+  });
   const [openDate, setOpenDate] = useState(false);
   const [date, setDate] = useState([
     {
@@ -26,34 +35,42 @@ const Header = ({ type }) => {
       key: "selection",
     },
   ]);
-  const [openOptions, setOpenOptions] = useState(false);
-  const [options, setOptions] = useState({
-    adult: 1,
-    children: 0,
-    room: 1,
-  });
 
+  const {
+    data: { provinces },
+    loading: provinceLoading,
+  } = useFetch("divisions/p");
+
+  const {
+    data: { districts },
+    loading: districtLoading,
+  } = useFetch(
+    `divisions/d?provinceId=${
+      province?.value || provinces?.[0]?._id
+    }`
+  );
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleOption = (name, operation) => {
-    setOptions((prev) => {
-      return {
-        ...prev,
-        [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
-      };
-    });
-  };
-
   const handleSearch = () => {
-    navigate("/hotels", { state: { destination, date, options } });
+    navigate("/hotels", {
+      state: {
+        province: province.label,
+        provinceId: province.value,
+        district: district.label,
+        districtId: district.value,
+        date,
+      },
+    });
   };
 
   return (
     <div className="header">
       <div
         className={
-          type === "list" ? "headerContainer listMode" : "headerContainer"
+          type === "list"
+            ? "headerContainer listMode"
+            : "headerContainer"
         }
       >
         <div className="headerList">
@@ -84,8 +101,9 @@ const Header = ({ type }) => {
               A lifetime of discounts? It's Genius.
             </h1>
             <p className="headerDesc">
-              Get rewarded for your travels – unlock instant savings of 10% or
-              more with a free Lamabooking account
+              Get rewarded for your travels – unlock instant
+              savings of 10% or more with a free Lamabooking
+              account
             </p>
             {!token?.authTokens?.accessToken && (
               <button
@@ -97,27 +115,68 @@ const Header = ({ type }) => {
             )}
             <div className="headerSearch">
               <div className="headerSearchItem">
-                <FontAwesomeIcon icon={faBed} className="headerIcon" />
-                <input
-                  type="text"
-                  placeholder="Where are you going?"
-                  className="headerSearchInput"
-                  onChange={(e) => setDestination(e.target.value)}
+                <FontAwesomeIcon
+                  icon={faBed}
+                  className="headerIcon"
+                />
+                <Select
+                  className="basic-single select-custom"
+                  classNamePrefix="select"
+                  isLoading={provinceLoading}
+                  placeholder='Province'
+                  value={province}
+                  isClearable
+                  isSearchable
+                  options={
+                    provinces?.map((p) => ({
+                      label: p.name,
+                      value: p._id,
+                    })) || []
+                  }
+                  onChange={(province) => {
+                    setProvince(province);
+                    setDistrict({ label: "", value: "" });
+                  }}
+                />
+                <Select
+                  className="basic-single select-custom"
+                  classNamePrefix="select"
+                  isLoading={districtLoading}
+                  value={district}
+                  isClearable
+                  isSearchable
+                  options={
+                    districts?.map((p) => ({
+                      label: p.name,
+                      value: p._id,
+                    })) || []
+                  }
+                  onChange={(district) =>
+                    setDistrict(district)
+                  }
                 />
               </div>
               <div className="headerSearchItem">
-                <FontAwesomeIcon icon={faCalendarDays} className="headerIcon" />
+                <FontAwesomeIcon
+                  icon={faCalendarDays}
+                  className="headerIcon"
+                />
                 <span
                   onClick={() => setOpenDate(!openDate)}
                   className="headerSearchText"
-                >{`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(
+                >{`${format(
+                  date[0].startDate,
+                  "MM/dd/yyyy"
+                )} to ${format(
                   date[0].endDate,
                   "MM/dd/yyyy"
                 )}`}</span>
                 {openDate && (
                   <DateRange
                     editableDateInputs={true}
-                    onChange={(item) => setDate([item.selection])}
+                    onChange={(item) =>
+                      setDate([item.selection])
+                    }
                     moveRangeOnFirstSelection={false}
                     ranges={date}
                     className="date"
@@ -126,81 +185,10 @@ const Header = ({ type }) => {
                 )}
               </div>
               <div className="headerSearchItem">
-                <FontAwesomeIcon icon={faPerson} className="headerIcon" />
-                <span
-                  onClick={() => setOpenOptions(!openOptions)}
-                  className="headerSearchText"
-                >{`${options.adult} adult · ${options.children} children · ${options.room} room`}</span>
-                {openOptions && (
-                  <div className="options">
-                    <div className="optionItem">
-                      <span className="optionText">Adult</span>
-                      <div className="optionCounter">
-                        <button
-                          disabled={options.adult <= 1}
-                          className="optionCounterButton"
-                          onClick={() => handleOption("adult", "d")}
-                        >
-                          -
-                        </button>
-                        <span className="optionCounterNumber">
-                          {options.adult}
-                        </span>
-                        <button
-                          className="optionCounterButton"
-                          onClick={() => handleOption("adult", "i")}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <div className="optionItem">
-                      <span className="optionText">Children</span>
-                      <div className="optionCounter">
-                        <button
-                          disabled={options.children <= 0}
-                          className="optionCounterButton"
-                          onClick={() => handleOption("children", "d")}
-                        >
-                          -
-                        </button>
-                        <span className="optionCounterNumber">
-                          {options.children}
-                        </span>
-                        <button
-                          className="optionCounterButton"
-                          onClick={() => handleOption("children", "i")}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <div className="optionItem">
-                      <span className="optionText">Room</span>
-                      <div className="optionCounter">
-                        <button
-                          disabled={options.room <= 1}
-                          className="optionCounterButton"
-                          onClick={() => handleOption("room", "d")}
-                        >
-                          -
-                        </button>
-                        <span className="optionCounterNumber">
-                          {options.room}
-                        </span>
-                        <button
-                          className="optionCounterButton"
-                          onClick={() => handleOption("room", "i")}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="headerSearchItem">
-                <button className="headerBtn" onClick={handleSearch}>
+                <button
+                  className="headerBtn"
+                  onClick={handleSearch}
+                >
                   Search
                 </button>
               </div>

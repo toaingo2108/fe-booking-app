@@ -98,7 +98,7 @@ const List = () => {
               />
             </div>
             <div className="lsItem">
-              <label>district</label>
+              <label>District</label>
               <Select
                 className="basic-single"
                 classNamePrefix="select"

@@ -123,7 +123,6 @@ const Header = ({ type }) => {
                   className="basic-single select-custom"
                   classNamePrefix="select"
                   isLoading={provinceLoading}
-                  placeholder='Province'
                   value={province}
                   isClearable
                   isSearchable

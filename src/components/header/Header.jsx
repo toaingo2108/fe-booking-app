@@ -2,7 +2,6 @@ import {
   faBed,
   faCalendarDays,
   faCar,
-  faPerson,
   faPlane,
   faTaxi,
 } from "@fortawesome/free-solid-svg-icons";

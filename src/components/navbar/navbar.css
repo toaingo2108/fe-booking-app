@@ -1,6 +1,6 @@
 .navbar {
   height: 56px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background-color: var(--primary);
   display: flex;
   justify-content: center;
   position: sticky;

@@ -1,27 +1,13 @@
 .mail {
   width: 100%;
   margin-top: 40px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-darker));
+  background-color: var(--primary);
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
   padding: 56px 24px;
-  position: relative;
-  overflow: hidden;
-}
-
-.mail::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    600px 300px at 50% 0%,
-    rgba(254, 187, 2, 0.18),
-    transparent 60%
-  );
-  pointer-events: none;
 }
 
 .mail > h1 {
@@ -29,19 +15,16 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
-  position: relative;
 }
 
 .mail > span {
   font-size: 15px;
   opacity: 0.9;
-  position: relative;
 }
 
 .mailInputContainer {
   display: flex;
   gap: 10px;
-  position: relative;
 }
 
 .mailInputContainer > input {

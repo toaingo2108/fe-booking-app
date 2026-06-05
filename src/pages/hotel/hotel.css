@@ -115,7 +115,7 @@
 }
 
 .hotelDetailsPrice {
-  background: linear-gradient(160deg, #ebf3ff 0%, #d1e5ff 100%);
+  background-color: #ebf3ff;
   padding: 24px;
   display: flex;
   flex-direction: column;

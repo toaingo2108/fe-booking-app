@@ -14,7 +14,7 @@
 }
 
 .listSearch {
-  background: linear-gradient(160deg, #fff8d8 0%, #ffe9a0 100%);
+  background-color: #fff5cc;
   padding: 20px;
   border-radius: var(--radius);
   position: sticky;

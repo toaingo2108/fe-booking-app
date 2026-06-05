@@ -144,6 +144,7 @@
   align-items: center;
   gap: 10px;
   flex: 1;
+  position: relative;
 }
 
 .headerSearchInput {
@@ -160,12 +161,13 @@
 
 .date {
   position: absolute;
-  top: 60px;
+  top: 48px;
   left: 0;
   z-index: 5;
   box-shadow: var(--shadow-lg);
   border-radius: var(--radius);
   overflow: hidden;
+  background-color: white;
 }
 
 .options {

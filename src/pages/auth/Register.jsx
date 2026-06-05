@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import "./auth.css";
 import { AuthContext } from "../../contexts/AuthContext";
-import axiosClient from "../../axiosClient";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import useFetch from "../../hooks/useFetch";
 
 const Register = () => {
@@ -18,21 +18,20 @@ const Register = () => {
     },
   });
 
-  const { loading, error, dispatch } = useContext(AuthContext);
+  const { loading, dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const {
     data: { provinces },
-  } = useFetch("/divisions/p");
+  } = useFetch("divisions/p");
 
   const {
     data: { districts },
   } = useFetch(
     `divisions/d?provinceId=${
-      credentials.address.province || provinces?.[0]?._id
-    }`
+      credentials.address.province || provinces?.[0]?._id || ""
+    }`,
   );
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -45,45 +44,66 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch({ type: "REGISTER_START" });
-    try {
-      const res = await axiosClient.post("/auth/register", credentials);
-      dispatch({ type: "REGISTER_SUCCESS", payload: res.data });
-      navigate("/");
-    } catch (error) {
-      dispatch({ type: "REGISTER_FAILURE", payload: error.response.data });
+
+    if (!credentials.name || !credentials.email || !credentials.password) {
+      toast.error("Please fill in your name, email, and password.");
+      return;
     }
+
+    dispatch({ type: "REGISTER_START" });
+
+    setTimeout(() => {
+      const mockToken = {
+        authTokens: {
+          accessToken: "mock-access-" + Math.random().toString(36).slice(2),
+          refreshToken: "mock-refresh-" + Math.random().toString(36).slice(2),
+        },
+        user: {
+          name: credentials.name,
+          email: credentials.email,
+          phoneNumber: credentials.phoneNumber,
+        },
+      };
+
+      dispatch({ type: "REGISTER_SUCCESS", payload: mockToken });
+      toast.success(`Welcome, ${credentials.name}! Account created.`);
+      navigate("/");
+    }, 700);
   };
 
   return (
-    <div className="register">
-      <form onSubmit={handleSubmit}>
+    <div className="authPage">
+      <form onSubmit={handleSubmit} className="authCard authCardWide">
+        <h1 className="authTitle">Create your account</h1>
+        <p className="authSubtitle">Demo mode — no real data is stored.</p>
         <div className="lContainer">
-          <div>
+          <div className="lRow">
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Full name"
               id="name"
+              value={credentials.name}
               onChange={handleChange}
               className="lInput"
               required
             />
             <input
               type="tel"
-              placeholder="Tel"
+              placeholder="Phone"
               id="phoneNumber"
+              value={credentials.phoneNumber}
               onChange={handleChange}
               className="lInput"
-              required
             />
           </div>
-          <div>
+          <div className="lRow">
             <input
               type="email"
               placeholder="Email"
               id="email"
+              value={credentials.email}
               onChange={handleChange}
               className="lInput"
               required
@@ -92,18 +112,18 @@ const Register = () => {
               type="password"
               placeholder="Password"
               id="password"
+              value={credentials.password}
               onChange={handleChange}
               className="lInput"
               required
             />
           </div>
-          <div>
+          <div className="lRow">
             <select
-              placeholder="Province"
               id="province"
               onChange={handleChangeAddress}
               className="lInput"
-              required
+              value={credentials.address.province}
             >
               <option value="">Province</option>
               {provinces?.map((province) => (
@@ -113,11 +133,10 @@ const Register = () => {
               ))}
             </select>
             <select
-              placeholder="District"
               id="district"
               onChange={handleChangeAddress}
               className="lInput"
-              required
+              value={credentials.address.district}
             >
               <option value="">District</option>
               {districts?.map((district) => (
@@ -126,27 +145,25 @@ const Register = () => {
                 </option>
               ))}
             </select>
-            <input
-              type="text"
-              placeholder="Address"
-              id="address"
-              onChange={handleChangeAddress}
-              className="lInput"
-              required
-            />
           </div>
+          <input
+            type="text"
+            placeholder="Address (street, ward...)"
+            id="address"
+            value={credentials.address.address}
+            onChange={handleChangeAddress}
+            className="lInput"
+          />
         </div>
-
         <button type="submit" disabled={loading} className="lButton">
-          Sign up
+          {loading ? "Creating account..." : "Sign up"}
         </button>
-        <div>
-          Do you already have an account?
-          <Link to="/login" style={{ marginLeft: "5px" }}>
-            Login in now
+        <p className="authFoot">
+          Already have an account?{" "}
+          <Link to="/login" className="authLink">
+            Sign in
           </Link>
-        </div>
-        {error && <span>{error.message}</span>}
+        </p>
       </form>
     </div>
   );

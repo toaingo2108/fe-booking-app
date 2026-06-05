@@ -1,14 +1,13 @@
 import { useContext, useState } from "react";
 import "./auth.css";
 import { AuthContext } from "../../contexts/AuthContext";
-import axiosClient from "../../axiosClient";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    email: undefined,
-    password: undefined,
+    email: "guest@example.com",
+    password: "demo1234",
   });
 
   const { loading, dispatch } = useContext(AuthContext);
@@ -19,49 +18,68 @@ const Login = () => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch({ type: "LOGIN_START" });
-    try {
-      const res = await axiosClient.post("/auth/login", credentials);
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
-      navigate("/");
-    } catch (error) {
-      dispatch({ type: "LOGIN_FAILURE", payload: error.response.data });
-      toast.error(error.response.data.message);
+
+    if (!credentials.email || !credentials.password) {
+      toast.error("Please enter both email and password.");
+      return;
     }
+
+    dispatch({ type: "LOGIN_START" });
+
+    setTimeout(() => {
+      const mockToken = {
+        authTokens: {
+          accessToken: "mock-access-" + Math.random().toString(36).slice(2),
+          refreshToken: "mock-refresh-" + Math.random().toString(36).slice(2),
+        },
+        user: {
+          name: credentials.email.split("@")[0],
+          email: credentials.email,
+        },
+      };
+
+      dispatch({ type: "LOGIN_SUCCESS", payload: mockToken });
+      toast.success(`Welcome back, ${mockToken.user.name}!`);
+      navigate("/");
+    }, 600);
   };
 
   return (
-    <div className="login">
-      <form onSubmit={handleSubmit}>
+    <div className="authPage">
+      <form onSubmit={handleSubmit} className="authCard">
+        <h1 className="authTitle">Sign in to BookingApp</h1>
+        <p className="authSubtitle">
+          Demo mode — any email + password works.
+        </p>
         <div className="lContainer">
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              id="email"
-              onChange={handleChange}
-              className="lInput"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              id="password"
-              onChange={handleChange}
-              className="lInput"
-            />
-          </div>
+          <input
+            type="email"
+            placeholder="Email"
+            id="email"
+            value={credentials.email}
+            onChange={handleChange}
+            className="lInput"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            id="password"
+            value={credentials.password}
+            onChange={handleChange}
+            className="lInput"
+          />
         </div>
         <button type="submit" disabled={loading} className="lButton">
-          Login
+          {loading ? "Signing in..." : "Sign in"}
         </button>
-        <div>
-          Do not have an account?
-          <Link to="/register" style={{ marginLeft: "5px" }}>
-            Sign up now
+        <p className="authFoot">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="authLink">
+            Sign up
           </Link>
-        </div>
+        </p>
       </form>
     </div>
   );

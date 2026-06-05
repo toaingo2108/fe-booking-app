@@ -2,8 +2,8 @@ import { useContext } from "react";
 import "./navbar.css";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axiosClient from "../../axiosClient";
 import { useModalProperty } from "../../hooks/useModalProperty";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { token, dispatch } = useContext(AuthContext);
@@ -12,17 +12,11 @@ const Navbar = () => {
   const location = useLocation();
   const { pathname } = location;
 
-  const handleLogout = async (e) => {
+  const handleLogout = (e) => {
     e.preventDefault();
-    try {
-      await axiosClient.post("/auth/logout", {
-        refreshToken: token.authTokens.refreshToken,
-      });
-      dispatch({ type: "LOGOUT" });
-      navigate("/");
-    } catch (error) {
-      console.error(error.message);
-    }
+    dispatch({ type: "LOGOUT" });
+    toast.info("Signed out.");
+    navigate("/");
   };
 
   return (

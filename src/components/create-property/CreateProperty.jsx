@@ -3,7 +3,6 @@ import Modal from "react-modal";
 import { useModalProperty } from "../../hooks/useModalProperty";
 import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
-import axiosClient from "../../axiosClient";
 import { toast } from "react-toastify";
 
 const customStyles = {
@@ -14,7 +13,20 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    zIndex: 2,
+    zIndex: 1500,
+    width: "min(560px, calc(100vw - 32px))",
+    maxHeight: "calc(100vh - 40px)",
+    padding: "24px 28px",
+    border: "none",
+    borderRadius: "16px",
+    boxShadow:
+      "0 10px 25px -5px rgba(0,0,0,0.18), 0 8px 10px -6px rgba(0,0,0,0.1)",
+    background: "white",
+  },
+  overlay: {
+    backgroundColor: "rgba(15, 23, 42, 0.6)",
+    backdropFilter: "blur(4px)",
+    zIndex: 1499,
   },
 };
 
@@ -85,18 +97,14 @@ const CreateProperty = () => {
     setFormData({ ...formData });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await axiosClient.post("/properties", formData);
+    setTimeout(() => {
+      setLoading(false);
       closeModal();
-      toast.success("Create property successful!!!");
-    } catch (error) {
-      console.error(error);
-    }
-
-    setLoading(false);
+      toast.success(`Property "${formData.title}" added! (demo only)`);
+    }, 700);
   };
 
   return (
@@ -110,9 +118,9 @@ const CreateProperty = () => {
       >
         <div
           style={{
-            maxHeight: "85vh",
-            overflowY: "scroll",
-            paddingRight: "20px",
+            maxHeight: "calc(100vh - 100px)",
+            overflowY: "auto",
+            paddingRight: "8px",
           }}
         >
           <div className="modal-header">

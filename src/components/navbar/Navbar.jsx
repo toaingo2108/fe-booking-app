@@ -26,17 +26,17 @@ const Navbar = () => {
           bookingapp
         </span>
         {token?.authTokens?.accessToken ? (
-          <span>
+          <div className="navItems">
             {pathname === "/" && (
               <Link className="navLink" to="#" onClick={() => openModal()}>
-                add property
+                + Add property
               </Link>
             )}
-            <span>{token.user.name}</span>
+            <span className="navUser">Hi, {token.user.name}</span>
             <button className="navButton" onClick={handleLogout}>
               Logout
             </button>
-          </span>
+          </div>
         ) : (
           <div className="navItems">
             <button className="navButton" onClick={() => navigate("/register")}>

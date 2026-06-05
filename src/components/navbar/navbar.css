@@ -55,13 +55,22 @@
 }
 
 .navLink {
-  margin: 0 16px;
   color: white;
   font-weight: 500;
+  font-size: 14px;
   opacity: 0.9;
   transition: opacity var(--transition);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
 }
 
 .navLink:hover {
   opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navUser {
+  color: white;
+  font-size: 14px;
+  opacity: 0.95;
 }

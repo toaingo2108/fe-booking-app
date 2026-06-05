@@ -1,30 +1,75 @@
-.mail{
+.mail {
   width: 100%;
-  margin-top: 50px;
-  background-color: #003580;
+  margin-top: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-darker));
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 50px;
+  gap: 18px;
+  padding: 56px 24px;
+  position: relative;
+  overflow: hidden;
 }
 
-.mailInputContainer>input{
-  width: 300px;
-  height: 30px;
-  padding: 10px;
+.mail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px 300px at 50% 0%,
+    rgba(254, 187, 2, 0.18),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.mail > h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  position: relative;
+}
+
+.mail > span {
+  font-size: 15px;
+  opacity: 0.9;
+  position: relative;
+}
+
+.mailInputContainer {
+  display: flex;
+  gap: 10px;
+  position: relative;
+}
+
+.mailInputContainer > input {
+  width: 320px;
+  max-width: 70vw;
+  height: 48px;
+  padding: 0 16px;
   border: none;
-  margin-right: 10px;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  outline: none;
+  color: var(--text);
 }
 
-.mailInputContainer>button{
-  height: 50px;
-  background-color: #0071c2;
+.mailInputContainer > button {
+  height: 48px;
+  padding: 0 24px;
+  background-color: var(--accent);
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+.mailInputContainer > button:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
 }

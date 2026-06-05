@@ -20,7 +20,7 @@ const cities = [
     name: "Hà Nội",
     properties: 421,
     image:
-      "https://images.unsplash.com/photo-1509923936113-71fc3ad75876?w=900&q=80",
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=900&q=80",
     provinceId: "p1",
   },
 ];
@@ -54,7 +54,16 @@ const Featured = () => {
           className="featuredItem"
           onClick={() => handleClick(city)}
         >
-          <img src={city.image} alt={city.name} className="featuredImg" />
+          <img
+            src={city.image}
+            alt={city.name}
+            className="featuredImg"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src =
+                "https://images.unsplash.com/photo-1528127269322-539801943592?w=900&q=80";
+            }}
+          />
           <div className="featuredTitles">
             <h1>{city.name}</h1>
             <h2>{city.properties} properties</h2>

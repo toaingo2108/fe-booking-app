@@ -17,8 +17,18 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import Select from "react-select";
 import useFetch from "../../hooks/useFetch";
+import { toast } from "react-toastify";
+
+const categories = [
+  { key: "stays", label: "Stays", icon: faBed },
+  { key: "flights", label: "Flights", icon: faPlane },
+  { key: "cars", label: "Car rentals", icon: faCar },
+  { key: "attractions", label: "Attractions", icon: faBed },
+  { key: "taxis", label: "Airport taxis", icon: faTaxi },
+];
 
 const Header = ({ type }) => {
+  const [activeCategory, setActiveCategory] = useState("stays");
   const [district, setDistrict] = useState({
     label: "",
     value: "",
@@ -35,6 +45,14 @@ const Header = ({ type }) => {
       key: "selection",
     },
   ]);
+
+  const handleCategoryClick = (cat) => {
+    if (cat.key === "stays") {
+      setActiveCategory("stays");
+      return;
+    }
+    toast.info(`${cat.label} is a demo placeholder — only Stays is active.`);
+  };
 
   const {
     data: { provinces },
@@ -74,26 +92,18 @@ const Header = ({ type }) => {
         }
       >
         <div className="headerList">
-          <div className="headerListItem active">
-            <FontAwesomeIcon icon={faBed} />
-            <span>Stays</span>
-          </div>
-          <div className="headerListItem">
-            <FontAwesomeIcon icon={faPlane} />
-            <span>Flights</span>
-          </div>
-          <div className="headerListItem">
-            <FontAwesomeIcon icon={faCar} />
-            <span>Car rentals</span>
-          </div>
-          <div className="headerListItem">
-            <FontAwesomeIcon icon={faBed} />
-            <span>Attractions</span>
-          </div>
-          <div className="headerListItem">
-            <FontAwesomeIcon icon={faTaxi} />
-            <span>Airport taxis</span>
-          </div>
+          {categories.map((cat) => (
+            <div
+              key={cat.key}
+              className={`headerListItem ${activeCategory === cat.key ? "active" : ""}`}
+              onClick={() => handleCategoryClick(cat)}
+              role="button"
+              tabIndex={0}
+            >
+              <FontAwesomeIcon icon={cat.icon} />
+              <span>{cat.label}</span>
+            </div>
+          ))}
         </div>
         {type !== "list" && (
           <>

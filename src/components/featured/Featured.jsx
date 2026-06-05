@@ -1,42 +1,66 @@
+import { useNavigate } from "react-router-dom";
 import "./featured.css";
 
+const cities = [
+  {
+    name: "Hồ Chí Minh",
+    properties: 538,
+    image:
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=900&q=80",
+    provinceId: "p2",
+  },
+  {
+    name: "Đà Nẵng",
+    properties: 312,
+    image:
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=900&q=80",
+    provinceId: "p3",
+  },
+  {
+    name: "Hà Nội",
+    properties: 421,
+    image:
+      "https://images.unsplash.com/photo-1509923936113-71fc3ad75876?w=900&q=80",
+    provinceId: "p1",
+  },
+];
+
 const Featured = () => {
+  const navigate = useNavigate();
+
+  const handleClick = (city) => {
+    navigate("/hotels", {
+      state: {
+        province: city.name,
+        provinceId: city.provinceId,
+        district: "",
+        districtId: "",
+        date: [
+          {
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
+            key: "selection",
+          },
+        ],
+      },
+    });
+  };
+
   return (
     <div className="featured">
-      <div className="featuredItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/city/max500/957801.webp?k=a969e39bcd40cdcc21786ba92826063e3cb09bf307bcfeac2aa392b838e9b7a5&o="
-          alt=""
-          className="featuredImg"
-        />
-        <div className="featuredTitles">
-          <h1>Dublin</h1>
-          <h2>123 properties</h2>
+      {cities.map((city) => (
+        <div
+          key={city.name}
+          className="featuredItem"
+          onClick={() => handleClick(city)}
+        >
+          <img src={city.image} alt={city.name} className="featuredImg" />
+          <div className="featuredTitles">
+            <h1>{city.name}</h1>
+            <h2>{city.properties} properties</h2>
+          </div>
         </div>
-      </div>
-      
-      <div className="featuredItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/city/max500/690334.webp?k=b99df435f06a15a1568ddd5f55d239507c0156985577681ab91274f917af6dbb&o="
-          alt=""
-          className="featuredImg"
-        />
-        <div className="featuredTitles">
-          <h1>Reno</h1>
-          <h2>533 properties</h2>
-        </div>
-      </div>
-      <div className="featuredItem">
-        <img
-          src="https://cf.bstatic.com/xdata/images/city/max500/689422.webp?k=2595c93e7e067b9ba95f90713f80ba6e5fa88a66e6e55600bd27a5128808fdf2&o="
-          alt=""
-          className="featuredImg"
-        />
-        <div className="featuredTitles">
-          <h1>Austin</h1>
-          <h2>532 properties</h2>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };
